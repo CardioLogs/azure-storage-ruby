@@ -188,6 +188,26 @@ module Azure::Storage
         response
       end
 
+      def retried_call(function_name, *args)
+        nb_retries = 0
+        has_timeout = args[-1].is_a?(Hash) && args[-1].key?(:timeout)
+        begin
+          send(function_name, *args)
+        rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Net::HTTP::Persistent::Error, Azure::Core::Http::HTTPError => e
+          # Retry faster without timeout
+          if has_timeout
+            args[-1].delete(:timeout)
+            has_timeout = false
+          end
+          nb_retries += 1
+          if nb_retries < 10 && !e.message&.starts_with?('BlobNotFound')
+            client.reset_agents! if e.class.name.start_with?('Azure::Core')
+            retry
+          end
+          fail e
+        end
+      end
+
       # Public: Get a list of Containers from the server.
       #
       # ==== Attributes
@@ -653,6 +673,10 @@ module Azure::Storage
           end
           options = { encode: true }.merge(options)
           generate_uri(path, query, options)
+        end
+
+        def name_to_uri(container_name, blob_name)
+          blob_uri(container_name, blob_name)
         end
 
       # Adds conditional header with required condition

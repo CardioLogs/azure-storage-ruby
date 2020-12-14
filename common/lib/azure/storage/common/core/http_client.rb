@@ -26,20 +26,12 @@
 
 module Azure::Storage::Common::Core
   module HttpClient
-    # Returns the http agent based on uri
-    # @param uri  [URI|String] the base uri (scheme, host, port) of the http endpoint
-    # @return [Net::HTTP] http agent for a given uri
+    # Caching HTTP connections by domain
     def agents(uri)
-      uri = URI(uri) unless uri.is_a? URI
-      key = uri.host
-
       @agents ||= {}
-      unless @agents.key?(key)
-        @agents[key] = build_http(uri)
-      else
-        reuse_agent!(@agents[key])
-      end
-      @agents[key]
+      domain = uri.to_s[%r{([^\/]*\/){4}}]
+      @agents[domain] = build_http(uri) unless @agents.key?(domain)
+      @agents[domain]
     end
 
     # Empties all the http agents

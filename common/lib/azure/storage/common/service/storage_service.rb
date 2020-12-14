@@ -57,6 +57,7 @@ module Azure::Storage::Common
       end
 
       def call(method, uri, body = nil, headers = {}, options = {})
+        headers['timeout'] = options[:timeout] if options[:timeout]
         super(method, uri, body, StorageService.common_headers(options, body).merge(headers), options)
       end
 
