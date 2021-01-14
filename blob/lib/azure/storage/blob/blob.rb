@@ -418,6 +418,22 @@ module Azure::Storage
       nil
     end
 
+    def set_blob_tier(container, blob, tier, options = {})
+      query = { "comp" => "metadata" }
+      StorageService.with_query query, "timeout", options[:timeout].to_s if options[:timeout]
+
+      uri = blob_uri(container, blob, query)
+
+      headers = {"x-ms-access-tier" => tier}
+      unless options.empty?
+        add_blob_conditional_headers options, headers
+        headers["x-ms-lease-id"] = options[:lease_id] if options[:lease_id]
+      end
+
+      call(:put, uri, nil, headers, options)
+      nil
+    end
+
     # Public: Establishes an exclusive write lock on a blob. The lock duration can be 15 to 60 seconds, or can be infinite.
     # To write to a locked blob, a client must provide a lease ID.
     #
