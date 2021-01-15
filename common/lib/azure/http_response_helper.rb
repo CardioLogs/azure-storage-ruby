@@ -16,23 +16,20 @@
 module Azure
   module HttpResponseHelper
 
-      # Sends request to HTTP server and returns a Faraday::Response
-      # @param method   [Symbol] The HTTP method to use (:get, :post, :put, :del, etc...)
-      # @param url      [URI] The URI of the HTTP endpoint to query
-      # @param conn     [Net::HTTP] http agent for a given uri
-      # @param headers  [String] The request headers
-      # @param body     [String] The request body
-      #returns Faraday::Response
-      def set_up_response(method, url, conn, headers ,body)
-        conn.run_request(method, url, nil, nil) do |req|
-          req.body = body if body
-          req.headers = headers if headers
-          unless headers.nil?
-            keep_alive = headers['Keep-Alive'] || headers['keep-alive']
-            req.options[:timeout] = keep_alive.split('=').last.to_i unless keep_alive.nil?
-          end
-          req.options[:open_timeout] ||= 60
-        end
+    # Sends request to HTTP server and returns a Faraday::Response
+    # @param method   [Symbol] The HTTP method to use (:get, :post, :put, :del, etc...)
+    # @param url      [URI] The URI of the HTTP endpoint to query
+    # @param conn     [Net::HTTP] http agent for a given uri
+    # @param headers  [String] The request headers
+    # @param body     [String] The request body
+    #returns Faraday::Response
+    def set_up_response(method, url, conn, headers, body)
+      conn.run_request(method, url, nil, nil) do |req|
+        req.body = body if body
+        req.options[:timeout] = headers.key?('timeout') ? headers.delete('timeout') : 5
+        req.options[:open_timeout] ||= 20
+        req.headers = headers if headers
       end
+    end
   end
 end

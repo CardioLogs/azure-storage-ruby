@@ -419,7 +419,7 @@ module Azure::Storage
     end
 
     def set_blob_tier(container, blob, tier, options = {})
-      query = { "comp" => "metadata" }
+      query = { "comp" => "tier" }
       StorageService.with_query query, "timeout", options[:timeout].to_s if options[:timeout]
 
       uri = blob_uri(container, blob, query)
