@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
   s.summary     = "Official Ruby client library to consume Azure Storage Blob service"
   s.homepage    = "http://github.com/azure/azure-storage-ruby"
   s.license     = "MIT"
-  s.files       = `git ls-files ./lib/azure/storage/blob/`.split("\n") << "./lib/azure/storage/blob.rb"
+  s.files       = Dir['./lib/azure/storage/blob/**/*', './lib/azure/storage/blob.rb']
 
   s.required_ruby_version = ">= 2.3.0"
 
