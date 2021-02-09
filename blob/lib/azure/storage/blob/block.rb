@@ -206,6 +206,7 @@ module Azure::Storage
       headers = {}
       unless options.empty?
         StorageService.with_header headers, "Content-MD5", options[:transactional_md5]
+        StorageService.with_header headers, "x-ms-access-tier", options[:tier]
         StorageService.with_header headers, "x-ms-blob-content-type", options[:content_type]
         StorageService.with_header headers, "x-ms-blob-content-encoding", options[:content_encoding]
         StorageService.with_header headers, "x-ms-blob-content-language", options[:content_language]
@@ -402,6 +403,7 @@ module Azure::Storage
         # set the rest of the optional headers
         StorageService.with_header headers, "Content-MD5", options[:transactional_md5]
         StorageService.with_header headers, "Content-Length", options[:content_length]
+        StorageService.with_header headers, "x-ms-access-tier", options[:tier]
         StorageService.with_header headers, "x-ms-blob-content-encoding", options[:content_encoding]
         StorageService.with_header headers, "x-ms-blob-content-language", options[:content_language]
         StorageService.with_header headers, "x-ms-blob-content-md5", options[:content_md5]
@@ -486,6 +488,7 @@ module Azure::Storage
         commit_options[:timeout] = options[:timeout] if options[:timeout]
         commit_options[:request_id] = options[:request_id] if options[:request_id]
         commit_options[:lease_id] = options[:lease_id] if options[:lease_id]
+        commit_options[:tier] = options[:tier] if options[:tier]
 
         commit_blob_blocks(container, blob, block_list, commit_options)
 
