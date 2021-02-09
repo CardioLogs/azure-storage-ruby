@@ -772,6 +772,7 @@ module Azure::Storage
       unless options.empty?
         add_blob_conditional_headers options, headers
         StorageService.add_metadata_to_headers options[:metadata], headers
+        headers["x-ms-access-tier"] = options[:tier] if options[:tier]
         headers["x-ms-lease-id"] = options[:lease_id] if options[:lease_id]
       end
 
