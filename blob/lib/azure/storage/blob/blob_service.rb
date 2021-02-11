@@ -675,6 +675,7 @@ module Azure::Storage
           generate_uri(path, query, options)
         end
 
+      public
         def name_to_uri(container_name, blob_name)
           blob_uri(container_name, blob_name)
         end
