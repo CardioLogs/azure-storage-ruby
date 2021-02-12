@@ -209,7 +209,7 @@ module Azure::Storage
         props[:content_encoding] = (xml > "Content-Encoding").text if (xml > "Content-Encoding").any?
         props[:content_language] = (xml > "Content-Language").text if (xml > "Content-Language").any?
         props[:content_md5] = (xml > "Content-MD5").text if (xml > "Content-MD5").any?
-        props[:tier] = (xml > "AccessTier").text if (xml > "AccessTier").any?
+        props[:tier] = (xml > "AccessTier").text.downcase.to_sym if (xml > "AccessTier").any?
 
         props[:cache_control] = (xml > "Cache-Control").text if (xml > "Cache-Control").any?
         props[:sequence_number] = (xml > "x-ms-blob-sequence-number").text.to_i if (xml > "x-ms-blob-sequence-number").any?
@@ -254,7 +254,7 @@ module Azure::Storage
         props[:copy_progress] = headers["x-ms-copy-progress"]
         props[:copy_completion_time] = headers["x-ms-copy-completion-time"]
         props[:copy_status_description] = headers["x-ms-copy-status-description"]
-        props[:tier] = headers["x-ms-access-tier"]
+        props[:tier] = headers["x-ms-access-tier"].to_s.downcase.to_sym
 
         props[:accept_ranges] = headers["Accept-Ranges"].to_i if headers["Accept-Ranges"]
 
